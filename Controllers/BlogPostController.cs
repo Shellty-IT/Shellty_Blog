@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PurrfectBlog.Data;
 using PurrfectBlog.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace PurrfectBlog.Controllers
 {
@@ -32,6 +33,27 @@ namespace PurrfectBlog.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View(blogPost);
+        }
+        public async Task<IActionResult> Posts()
+        {
+            var posts = await _context.BlogPosts
+                .OrderByDescending(p => p.CreatedDate)
+                .ToListAsync();
+    
+            return View(posts);
+        }
+        
+        public async Task<IActionResult> Post(int id)
+        {
+            var post = await _context.BlogPosts
+                .FirstOrDefaultAsync(p => p.Id == id);
+    
+            if (post == null)
+            {
+                return NotFound();
+            }
+    
+            return View(post);
         }
     }
 }

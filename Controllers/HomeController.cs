@@ -21,6 +21,7 @@ public class HomeController : Controller
     {
         var posts = await _context.BlogPosts
             .OrderByDescending(p => p.CreatedDate)
+            .Take(3)
             .ToListAsync();
         return View(posts);
     }

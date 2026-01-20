@@ -1,0 +1,55 @@
+﻿@model PurrfectBlog.Models.BlogPost
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="BlogPost" asp-action="Posts">All Posts</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+        </ol>
+    </nav>
+
+    <article class="mb-5">
+        <header class="mb-4">
+            <h1 class="display-4 mb-3">@Model.Title</h1>
+            
+            <div class="text-muted">
+                <span class="me-3">
+                    <i class="bi bi-calendar3"></i>
+                    @Model.CreatedDate.ToString("MMMM dd, yyyy 'at' h:mm tt")
+                </span>
+                
+                @if (!string.IsNullOrEmpty(Model.Category))
+                {
+                    <span class="badge bg-primary">@Model.Category</span>
+                }
+            </div>
+
+            @if (Model.ModifiedDate.HasValue)
+            {
+                <small class="text-muted d-block mt-2">
+                    Last updated: @Model.ModifiedDate.Value.ToString("MMMM dd, yyyy")
+                </small>
+            }
+        </header>
+
+        <hr class="my-4">
+
+        <div class="post-content">
+            @Html.Raw(Model.Content.Replace("\n", "<br>"))
+        </div>
+    </article>
+
+    <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+        <a asp-controller="BlogPost" asp-action="Posts" class="btn btn-outline-secondary">
+            ← Back to All Posts
+        </a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">
+            Home
+        </a>
+    </div>
+</div>

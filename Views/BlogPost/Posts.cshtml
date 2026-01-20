@@ -1,0 +1,63 @@
+﻿@model IEnumerable<PurrfectBlog.Models.BlogPost>
+
+@{
+    ViewData["Title"] = "All Posts";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Posts List</h1>
+        <a asp-controller="BlogPost" asp-action="CreatePost" class="btn btn-primary">Write New Post</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No posts yet. Be the first to write something!
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var post in Model)
+            {
+                <div class="col-12 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <a asp-controller="BlogPost" asp-action="Post" asp-route-id="@post.Id" 
+                                   class="text-decoration-none text-dark">
+                                    @post.Title
+                                </a>
+                            </h3>
+                            
+                            <div class="text-muted small mb-3">
+                                <span>@post.CreatedDate.ToString("MMMM dd, yyyy")</span>
+                                @if (!string.IsNullOrEmpty(post.Category))
+                                {
+                                    <span class="ms-2">
+                                        <span class="badge bg-secondary">@post.Category</span>
+                                    </span>
+                                }
+                            </div>
+
+                            <p class="card-text">
+                                @{
+                                    var excerpt = post.Content.Length > 200 
+                                        ? post.Content.Substring(0, 200) + "..." 
+                                        : post.Content;
+                                }
+                                @excerpt
+                            </p>
+
+                            <a asp-controller="BlogPost" asp-action="Post" asp-route-id="@post.Id" 
+                               class="btn btn-outline-primary btn-sm">
+                                Read More →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
