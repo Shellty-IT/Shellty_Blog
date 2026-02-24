@@ -14,13 +14,22 @@ namespace PurrfectBlog.Controllers
             _context = context;
         }
 
-        // GET: BlogPost/CreatePost
-        public IActionResult CreatePost()
+        private async Task LoadCategories()
         {
+            ViewBag.Categories = await _context.BlogPosts
+                .Where(p => !string.IsNullOrEmpty(p.Category))
+                .Select(p => p.Category)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync();
+        }
+
+        public async Task<IActionResult> CreatePost()
+        {
+            await LoadCategories();
             return View();
         }
-        
-        // POST: BlogPost/CreatePost
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePost(BlogPost blogPost)
@@ -30,37 +39,50 @@ namespace PurrfectBlog.Controllers
                 blogPost.CreatedDate = DateTime.Now;
                 _context.BlogPosts.Add(blogPost);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Home");
+                TempData["SuccessMessage"] = "Post created successfully!";
+                return RedirectToAction("Post", new { id = blogPost.Id });
             }
+            await LoadCategories();
             return View(blogPost);
         }
-        public async Task<IActionResult> Posts()
+
+        public async Task<IActionResult> Posts(string category)
         {
-            var posts = await _context.BlogPosts
+            var query = _context.BlogPosts.AsQueryable();
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                query = query.Where(p => p.Category == category);
+            }
+
+            var posts = await query
                 .OrderByDescending(p => p.CreatedDate)
                 .ToListAsync();
-    
+
+            await LoadCategories();
+            ViewBag.SelectedCategory = category;
+
             return View(posts);
         }
-        
+
         public async Task<IActionResult> Post(int id)
         {
             var post = await _context.BlogPosts
                 .FirstOrDefaultAsync(p => p.Id == id);
-    
+
             if (post == null)
             {
                 return View("PostNotFound");
             }
-    
+
             return View(post);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> DeletePost(int id)
         {
             var post = await _context.BlogPosts.FindAsync(id);
-    
+
             if (post == null)
             {
                 TempData["ErrorMessage"] = "Post not found.";
@@ -69,24 +91,25 @@ namespace PurrfectBlog.Controllers
 
             _context.BlogPosts.Remove(post);
             await _context.SaveChangesAsync();
-    
+
             TempData["SuccessMessage"] = $"Post '{post.Title}' has been deleted successfully.";
             return RedirectToAction("Posts");
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> EditPost(int id)
         {
             var post = await _context.BlogPosts.FindAsync(id);
-    
+
             if (post == null)
             {
                 return View("PostNotFound");
             }
 
+            await LoadCategories();
             return View(post);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int id, BlogPost updatedPost)
@@ -98,11 +121,12 @@ namespace PurrfectBlog.Controllers
 
             if (!ModelState.IsValid)
             {
+                await LoadCategories();
                 return View(updatedPost);
             }
 
             var existingPost = await _context.BlogPosts.FindAsync(id);
-    
+
             if (existingPost == null)
             {
                 return NotFound();
@@ -121,7 +145,8 @@ namespace PurrfectBlog.Controllers
             }
             catch (Exception)
             {
-                ModelState.AddModelError("", "An error occurred while saving changes. Please try again.");
+                ModelState.AddModelError("", "An error occurred while saving changes.");
+                await LoadCategories();
                 return View(updatedPost);
             }
         }
