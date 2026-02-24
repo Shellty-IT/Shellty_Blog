@@ -1,48 +1,60 @@
 ﻿@model PurrfectBlog.Models.BlogPost
 
 @{
-    ViewData["Title"] = "Edit Post";
+ViewData["Title"] = "Edit Post";
+var categories = ViewBag.Categories as List<string>;
 }
 
-<div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li class="breadcrumb-item"><a asp-controller="BlogPost" asp-action="Posts">All Posts</a></li>
-            <li class="breadcrumb-item"><a asp-controller="BlogPost" asp-action="Post" asp-route-id="@Model.Id">@Model.Title</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Edit</li>
-        </ol>
-    </nav>
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-controller="BlogPost" asp-action="Posts">All Posts</a></li>
+        <li class="breadcrumb-item"><a asp-controller="BlogPost" asp-action="Post" asp-route-id="@Model.Id">@Model.Title</a></li>
+        <li class="breadcrumb-item active">Edit</li>
+    </ol>
+</nav>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <h2 class="mb-4">Edit Post</h2>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h2 class="section-title mb-4">Edit Post</h2>
 
+        <div class="form-card">
             <form asp-action="EditPost" method="post">
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="CreatedDate" />
 
                 <div class="mb-3">
                     <label asp-for="Title" class="form-label">Post Title</label>
-                    <input asp-for="Title" class="form-control" placeholder="Enter a catchy title..." required />
+                    <input asp-for="Title" class="form-control" placeholder="Enter a catchy title..." />
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="Category" class="form-label">Category</label>
-                    <input asp-for="Category" class="form-control" placeholder="e.g., Technology, Lifestyle, Travel..." />
+                    <input asp-for="Category" class="form-control" list="categoryList" placeholder="e.g., Behavior, Lifestyle..." />
+                    <datalist id="categoryList">
+                        @if (categories != null)
+                        {
+                        @foreach (var cat in categories)
+                        {
+                        <option value="@cat"></option>
+                        }
+                        }
+                    </datalist>
                     <span asp-validation-for="Category" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="Content" class="form-label">Content</label>
-                    <textarea asp-for="Content" class="form-control" rows="12" placeholder="Write your post content here..." required></textarea>
+                    <textarea asp-for="Content" class="form-control" rows="12" id="contentArea"
+                              placeholder="Write your post content here..."></textarea>
+                    <div class="word-counter" id="wordCount">0 words</div>
                     <span asp-validation-for="Content" class="text-danger"></span>
                 </div>
 
-                <div class="d-flex gap-2 justify-content-between">
+                <div class="d-flex justify-content-between">
                     <a asp-controller="BlogPost" asp-action="Post" asp-route-id="@Model.Id" class="btn btn-secondary">
-                        Cancel
+                        <i class="bi bi-x-lg"></i> Cancel
                     </a>
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-save"></i> Save Changes
@@ -54,24 +66,36 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    
-    <script>
-        let formChanged = false;
-        
-        document.querySelector('form').addEventListener('input', function() {
-            formChanged = true;
-        });
-        
-        document.querySelector('form').addEventListener('submit', function() {
-            formChanged = false;
-        });
-        
-        window.addEventListener('beforeunload', function(e) {
-            if (formChanged) {
-                e.preventDefault();
-                e.returnValue = '';
-            }
-        });
-    </script>
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script>
+    var textarea = document.getElementById('contentArea');
+    var counter = document.getElementById('wordCount');
+
+    function updateCount() {
+        var text = textarea.value.trim();
+        var count = text.length > 0 ? text.split(/\s+/).length : 0;
+        counter.textContent = count + ' words';
+    }
+
+    textarea.addEventListener('input', updateCount);
+    updateCount();
+
+    var formChanged = false;
+
+    document.querySelector('form').addEventListener('input', function() {
+        formChanged = true;
+    });
+
+    document.querySelector('form').addEventListener('submit', function() {
+        formChanged = false;
+    });
+
+    window.addEventListener('beforeunload', function(e) {
+        if (formChanged) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+</script>
 }
