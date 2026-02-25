@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Shellty_Blog.Models.ApplicationUser> SignInManager
+@inject UserManager<Shellty_Blog.Models.ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -40,18 +44,74 @@
                                 <i class="bi bi-journals"></i> Posts
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(currentController == "BlogPost" && currentAction == "CreatePost" ? "active" : "")"
-                               asp-controller="BlogPost" asp-action="CreatePost">
-                                <i class="bi bi-pencil-square"></i> Write
-                            </a>
-                        </li>
+
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController == "BlogPost" && currentAction == "CreatePost" ? "active" : "")"
+                                   asp-controller="BlogPost" asp-action="CreatePost">
+                                    <i class="bi bi-pencil-square"></i> Write
+                                </a>
+                            </li>
+                        }
+
                         <li class="nav-item">
                             <a class="nav-link @(currentController == "Home" && currentAction == "Privacy" ? "active" : "")"
                                asp-controller="Home" asp-action="Privacy">
                                 <i class="bi bi-shield-check"></i> Privacy
                             </a>
                         </li>
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle"></i> @UserManager.GetUserAsync(User).Result?.DisplayName
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Admin" asp-action="Requests">
+                                                <i class="bi bi-shield-lock"></i> Admin Panel
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Admin" asp-action="RequestAdmin">
+                                                <i class="bi bi-shield-plus"></i> Request Admin
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                    }
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-box-arrow-right"></i> Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController == "Account" && currentAction == "Login" ? "active" : "")"
+                                   asp-controller="Account" asp-action="Login">
+                                    <i class="bi bi-box-arrow-in-right"></i> Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController == "Account" && currentAction == "Register" ? "active" : "")"
+                                   asp-controller="Account" asp-action="Register">
+                                    <i class="bi bi-person-plus"></i> Register
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
