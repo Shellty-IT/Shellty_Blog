@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PurrfectBlog.Data;
-using PurrfectBlog.Models;
+using Shellty_Blog.Data;
+using Shellty_Blog.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace PurrfectBlog.Controllers
+namespace Shellty_Blog.Controllers
 {
     public class BlogPostController : Controller
     {
@@ -36,7 +36,7 @@ namespace PurrfectBlog.Controllers
         {
             if (ModelState.IsValid)
             {
-                blogPost.CreatedDate = DateTime.Now;
+                blogPost.CreatedDate = DateTime.UtcNow;
                 _context.BlogPosts.Add(blogPost);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Post created successfully!";
@@ -135,7 +135,7 @@ namespace PurrfectBlog.Controllers
             existingPost.Title = updatedPost.Title;
             existingPost.Content = updatedPost.Content;
             existingPost.Category = updatedPost.Category;
-            existingPost.ModifiedDate = DateTime.Now;
+            existingPost.ModifiedDate = DateTime.UtcNow;
 
             try
             {
