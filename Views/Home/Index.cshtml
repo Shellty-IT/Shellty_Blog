@@ -10,9 +10,12 @@
         <h1 class="mb-0">Welcome to Shellty Blog</h1>
     </div>
     <p>Your journey into the world of feline adventures begins here!</p>
-    <a asp-controller="BlogPost" asp-action="CreatePost" class="btn btn-light btn-lg">
-        <i class="bi bi-pencil-square"></i> Create New Post
-    </a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-controller="BlogPost" asp-action="CreatePost" class="btn btn-light btn-lg">
+            <i class="bi bi-pencil-square"></i> Create New Post
+        </a>
+    }
 </div>
 
 <section>
