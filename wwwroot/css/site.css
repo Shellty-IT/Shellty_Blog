@@ -580,4 +580,8 @@ a:hover {
   .card-img-top {
     height: 160px;
   }
+
+  .highlight-ty {
+    color: #00E5FF; /* jaskrawy błękit */
+  }
 }
