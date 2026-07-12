@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shellty_Blog.Models;
+using Shellty_Blog.Models.ViewModels;
 using Shellty_Blog.Services;
 
 namespace Shellty_Blog.Controllers
@@ -25,12 +26,33 @@ namespace Shellty_Blog.Controllers
             return File(data, contentType);
         }
 
-        public async Task<IActionResult> Posts(string category)
+        public async Task<IActionResult> Posts(
+            string? search,
+            string? category,
+            string sort = "newest",
+            int page = 1)
         {
-            var posts = await _blogService.GetPostsAsync(category);
-            ViewBag.Categories = await _blogService.GetCategoriesAsync();
-            ViewBag.SelectedCategory = category;
-            return View(posts);
+            search = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+            category = string.IsNullOrWhiteSpace(category) ? null : category.Trim();
+            sort = sort is "oldest" or "title" ? sort : "newest";
+
+            var result = await _blogService.GetPostsAsync(
+                new BlogPostQuery(search, category, sort, page));
+            var categories = await _blogService.GetCategoriesAsync();
+
+            var model = new PostsViewModel
+            {
+                Posts = result.Items.Select(PostListItemViewModel.FromPost).ToList(),
+                Categories = categories,
+                SearchTerm = search,
+                Category = category,
+                Sort = sort,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                TotalCount = result.TotalCount
+            };
+
+            return View(model);
         }
 
         public async Task<IActionResult> Post(int id)

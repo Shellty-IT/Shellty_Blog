@@ -15,17 +15,61 @@ namespace Shellty_Blog.Services
             _context = context;
         }
 
-        public async Task<List<BlogPost>> GetPostsAsync(string? category)
+        public async Task<PagedResult<BlogPost>> GetPostsAsync(BlogPostQuery options)
         {
-            var query = _context.BlogPosts.AsQueryable();
+            var query = _context.BlogPosts.AsNoTracking().AsQueryable();
 
-            if (!string.IsNullOrEmpty(category))
+            if (!string.IsNullOrWhiteSpace(options.SearchTerm))
             {
-                query = query.Where(p => p.Category == category);
+                var searchTerm = options.SearchTerm.Trim().ToLower();
+                query = query.Where(p =>
+                    p.Title.ToLower().Contains(searchTerm) ||
+                    p.Content.ToLower().Contains(searchTerm) ||
+                    (p.Category != null && p.Category.ToLower().Contains(searchTerm)));
             }
 
-            return await query
+            if (!string.IsNullOrWhiteSpace(options.Category))
+            {
+                query = query.Where(p => p.Category == options.Category);
+            }
+
+            query = options.Sort switch
+            {
+                "oldest" => query.OrderBy(p => p.CreatedDate),
+                "title" => query.OrderBy(p => p.Title),
+                _ => query.OrderByDescending(p => p.CreatedDate)
+            };
+
+            var pageSize = Math.Clamp(options.PageSize, 1, 24);
+            var totalCount = await query.CountAsync();
+            var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)pageSize));
+            var currentPage = Math.Clamp(options.Page, 1, totalPages);
+
+            var posts = await query
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new BlogPost
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Content = p.Content,
+                    Category = p.Category,
+                    CreatedDate = p.CreatedDate,
+                    ModifiedDate = p.ModifiedDate,
+                    ImageFileName = p.ImageFileName,
+                    ImageContentType = p.ImageContentType
+                })
+                .ToListAsync();
+
+            return new PagedResult<BlogPost>(posts, totalCount, currentPage, pageSize);
+        }
+
+        public async Task<List<BlogPost>> GetRecentPostsAsync(int count)
+        {
+            return await _context.BlogPosts
+                .AsNoTracking()
                 .OrderByDescending(p => p.CreatedDate)
+                .Take(Math.Clamp(count, 1, 12))
                 .Select(p => new BlogPost
                 {
                     Id = p.Id,
@@ -40,6 +84,11 @@ namespace Shellty_Blog.Services
                 .ToListAsync();
         }
 
+        public Task<int> GetPostCountAsync()
+        {
+            return _context.BlogPosts.AsNoTracking().CountAsync();
+        }
+
         public async Task<BlogPost?> GetByIdAsync(int id)
         {
             return await _context.BlogPosts.FirstOrDefaultAsync(p => p.Id == id);
@@ -48,6 +97,7 @@ namespace Shellty_Blog.Services
         public async Task<List<string>> GetCategoriesAsync()
         {
             return await _context.BlogPosts
+                .AsNoTracking()
                 .Where(p => !string.IsNullOrEmpty(p.Category))
                 .Select(p => p.Category!)
                 .Distinct()
