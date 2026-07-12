@@ -1,27 +1,34 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Shellty_Blog.Data;
 using Shellty_Blog.Models;
+using Shellty_Blog.Models.ViewModels;
+using Shellty_Blog.Services;
 
 namespace Shellty_Blog.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly BlogContext _context;
+    private readonly IBlogPostService _blogPostService;
 
-    public HomeController(BlogContext context)
+    public HomeController(IBlogPostService blogPostService)
     {
-        _context = context;
+        _blogPostService = blogPostService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var posts = await _context.BlogPosts
-            .OrderByDescending(p => p.CreatedDate)
-            .Take(3)
-            .ToListAsync();
-        return View(posts);
+        var posts = await _blogPostService.GetRecentPostsAsync(3);
+        var totalPostCount = await _blogPostService.GetPostCountAsync();
+        var categories = await _blogPostService.GetCategoriesAsync();
+
+        var model = new HomeViewModel
+        {
+            RecentPosts = posts.Select(post => PostListItemViewModel.FromPost(post, 140)).ToList(),
+            TotalPostCount = totalPostCount,
+            CategoryCount = categories.Count
+        };
+
+        return View(model);
     }
 
     public IActionResult Privacy()

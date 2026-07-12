@@ -8,7 +8,7 @@
     const removeFlag = document.getElementById('removeImageFlag');
     const currentImage = document.getElementById('currentImage');
     const removeCurrentBtn = document.getElementById('removeCurrentImage');
-    const form = document.querySelector('form');
+    const form = textarea ? textarea.closest('form') : null;
     let formChanged = false;
 
     function updateWordCount() {
@@ -46,7 +46,21 @@
     if (imageInput instanceof HTMLInputElement) {
         imageInput.addEventListener('change', function () {
             if (this.files && this.files[0]) {
-                showPreview(this.files[0]);
+                const file = this.files[0];
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                const validationMessage = file.size > 5 * 1024 * 1024
+                    ? 'The image cannot be larger than 5 MB.'
+                    : allowedTypes.includes(file.type) ? '' : 'Choose a JPG, PNG, GIF or WebP image.';
+
+                this.setCustomValidity(validationMessage);
+                if (validationMessage) {
+                    this.reportValidity();
+                    clearFileInput();
+                    hidePreview();
+                    return;
+                }
+
+                showPreview(file);
                 if (currentImage) currentImage.style.display = 'none';
                 if (removeFlag) removeFlag.setAttribute('value', 'false');
             } else {
@@ -80,7 +94,10 @@
         });
 
         window.addEventListener('beforeunload', function (e) {
-            if (formChanged) e.preventDefault();
+            if (formChanged) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
         });
     }
 });

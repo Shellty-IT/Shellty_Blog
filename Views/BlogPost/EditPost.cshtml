@@ -16,10 +16,17 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <h2 class="section-title mb-4">Edit Post</h2>
+        <header class="page-header">
+            <div>
+                <span class="eyebrow text-primary">Editor</span>
+                <h1 class="section-title">Edit post</h1>
+                <p>Refine the story and keep the published article up to date.</p>
+            </div>
+        </header>
 
         <div class="form-card">
             <form asp-action="EditPost" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="CreatedDate" />
                 <input type="hidden" name="removeImage" id="removeImageFlag" value="false" />
@@ -50,11 +57,10 @@
 
                     @if (!string.IsNullOrEmpty(Model.ImageContentType))
                     {
-                        <div id="currentImage" class="mb-2">
+                        <div id="currentImage" class="current-image mb-3">
                             <img src="@Url.Action("GetImage", "BlogPost", new { id = Model.Id })"
                                  alt="Current cover"
-                                 class="img-fluid rounded-3"
-                                 style="max-height: 300px;" />
+                                 class="img-fluid rounded-3" />
                             <div class="mt-2">
                                 <button type="button" id="removeCurrentImage" class="btn btn-sm btn-outline-danger">
                                     <i class="bi bi-x-lg"></i> Remove current image
@@ -63,11 +69,11 @@
                         </div>
                     }
 
-                    <input type="file" name="imageFile" id="imageInput" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif" />
-                    <small class="text-muted">Max 5 MB. JPG, PNG, WebP or GIF. Uploading a new image replaces the current one.</small>
+                    <input type="file" name="imageFile" id="imageInput" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif" aria-describedby="imageHelp" />
+                    <small id="imageHelp" class="text-muted">Maximum 5 MB. JPG, PNG, WebP or GIF. A new image replaces the current one.</small>
 
-                    <div id="imagePreview" class="mt-2" style="display: none;">
-                        <img id="previewImg" src="data:," class="img-fluid rounded-3" style="max-height: 300px;" alt="Preview" />
+                    <div id="imagePreview" class="image-preview mt-3" style="display: none;">
+                        <img id="previewImg" src="data:," class="img-fluid rounded-3" alt="Selected cover preview" />
                         <button type="button" id="removePreview" class="btn btn-sm btn-outline-danger mt-2">
                             <i class="bi bi-x-lg"></i> Remove
                         </button>
@@ -82,7 +88,7 @@
                     <span asp-validation-for="Content" class="text-danger"></span>
                 </div>
 
-                <div class="d-flex justify-content-between">
+                <div class="form-actions">
                     <a asp-controller="BlogPost" asp-action="Post" asp-route-id="@Model.Id" class="btn btn-secondary">
                         <i class="bi bi-x-lg"></i> Cancel
                     </a>

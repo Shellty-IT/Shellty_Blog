@@ -4,7 +4,9 @@ namespace Shellty_Blog.Services
 {
     public interface IBlogPostService
     {
-        Task<List<BlogPost>> GetPostsAsync(string? category);
+        Task<PagedResult<BlogPost>> GetPostsAsync(BlogPostQuery query);
+        Task<List<BlogPost>> GetRecentPostsAsync(int count);
+        Task<int> GetPostCountAsync();
         Task<BlogPost?> GetByIdAsync(int id);
         Task<List<string>> GetCategoriesAsync();
         Task CreateAsync(BlogPost post);

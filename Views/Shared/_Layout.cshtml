@@ -1,6 +1,15 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var isSignedIn = SignInManager.IsSignedIn(User);
+    var currentUser = isSignedIn ? await UserManager.GetUserAsync(User) : null;
+    var displayName = currentUser?.DisplayName ?? User.Identity?.Name ?? "Account";
+    var accountInitial = string.IsNullOrWhiteSpace(displayName) ? "?" : displayName[..1].ToUpperInvariant();
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,101 +17,95 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#1a3050" />
+    <meta name="description" content="Shellty Blog — practical guides and thoughtful stories for curious minds." />
     <title>@ViewData["Title"] - Shellty Blog</title>
-    
-    <link rel="icon" type="image/png" href="~/favicon-96x96.png" sizes="115x115" />
+
+    <link rel="icon" type="image/png" href="~/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
     <link rel="shortcut icon" href="~/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="216x216" href="~/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/apple-touch-icon.png" />
     <link rel="manifest" href="~/site.webmanifest" />
-    
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    @{
-        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-    }
-
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-dark navbar-custom">
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom" aria-label="Main navigation">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
-                    <span id="navbar-logo" style="margin-right: 8px;"></span>
-                    <span>Shell<span class="highlight-ty">ty</span> Blog</span>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index" aria-label="Shellty Blog home">
+                    <span id="navbar-logo" class="navbar-logo" aria-hidden="true"></span>
+                    <span>Shell<span class="highlight-ty">ty</span> <span class="brand-suffix">Blog</span></span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
                         <li class="nav-item">
-                            <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")"
-                               asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-house"></i> Home
-                            </a>
+                            <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : null)"
+                               aria-current="@(currentController == "Home" && currentAction == "Index" ? "page" : null)"
+                               asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(currentController == "BlogPost" && currentAction == "Posts" ? "active" : "")"
-                               asp-controller="BlogPost" asp-action="Posts">
-                                <i class="bi bi-journals"></i> Posts
-                            </a>
+                            <a class="nav-link @(currentController == "BlogPost" && currentAction == "Posts" ? "active" : null)"
+                               aria-current="@(currentController == "BlogPost" && currentAction == "Posts" ? "page" : null)"
+                               asp-controller="BlogPost" asp-action="Posts">Explore</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(currentController == "Home" && currentAction == "Privacy" ? "active" : null)"
+                               aria-current="@(currentController == "Home" && currentAction == "Privacy" ? "page" : null)"
+                               asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
 
-                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        @if (isSignedIn && User.IsInRole("Admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link @(currentController == "BlogPost" && currentAction == "CreatePost" ? "active" : "")"
-                                   asp-controller="BlogPost" asp-action="CreatePost">
-                                    <i class="bi bi-pencil-square"></i> Write
+                            <li class="nav-item nav-write-item">
+                                <a class="btn nav-write-button" asp-controller="BlogPost" asp-action="CreatePost">
+                                    <i class="bi bi-pencil-square" aria-hidden="true"></i> Write
                                 </a>
                             </li>
                         }
 
-                        <li class="nav-item">
-                            <a class="nav-link @(currentController == "Home" && currentAction == "Privacy" ? "active" : "")"
-                               asp-controller="Home" asp-action="Privacy">
-                                <i class="bi bi-shield-check"></i> Privacy
-                            </a>
-                        </li>
-
-                        @if (SignInManager.IsSignedIn(User))
+                        @if (isSignedIn)
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-person-circle"></i> @UserManager.GetUserAsync(User).Result?.DisplayName
+                            <li class="nav-item dropdown account-menu">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="account-avatar" aria-hidden="true">@accountInitial</span>
+                                    <span class="account-name">@displayName</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     @if (User.IsInRole("Admin"))
                                     {
+                                        <li><h2 class="dropdown-header">Administration</h2></li>
                                         <li>
                                             <a class="dropdown-item" asp-controller="Admin" asp-action="Requests">
-                                                <i class="bi bi-shield-lock"></i> Admin Requests
+                                                <i class="bi bi-shield-check" aria-hidden="true"></i> Admin requests
                                             </a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" asp-controller="Admin" asp-action="Users">
-                                                <i class="bi bi-people"></i> Manage Users
+                                                <i class="bi bi-people" aria-hidden="true"></i> Manage users
                                             </a>
                                         </li>
-                                        <li><hr class="dropdown-divider" /></li>
                                     }
                                     else
                                     {
                                         <li>
                                             <a class="dropdown-item" asp-controller="Admin" asp-action="RequestAdmin">
-                                                <i class="bi bi-shield-plus"></i> Request Admin
+                                                <i class="bi bi-shield-plus" aria-hidden="true"></i> Request admin access
                                             </a>
                                         </li>
-                                        <li><hr class="dropdown-divider" /></li>
                                     }
+                                    <li><hr class="dropdown-divider" /></li>
                                     <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post">
                                             <button type="submit" class="dropdown-item">
-                                                <i class="bi bi-box-arrow-right"></i> Logout
+                                                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Log out
                                             </button>
                                         </form>
                                     </li>
@@ -111,17 +114,11 @@
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link @(currentController == "Account" && currentAction == "Login" ? "active" : "")"
-                                   asp-controller="Account" asp-action="Login">
-                                    <i class="bi bi-box-arrow-in-right"></i> Login
-                                </a>
+                            <li class="nav-item auth-links">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Log in</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link @(currentController == "Account" && currentAction == "Register" ? "active" : "")"
-                                   asp-controller="Account" asp-action="Register">
-                                    <i class="bi bi-person-plus"></i> Register
-                                </a>
+                            <li class="nav-item auth-links">
+                                <a class="btn nav-register-button" asp-controller="Account" asp-action="Register">Join Shellty</a>
                             </li>
                         }
                     </ul>
@@ -132,20 +129,25 @@
 
     <div class="page-wrapper">
         <div class="container">
-            <main role="main" class="py-4">
+            <partial name="_StatusMessages" />
+            <main id="main-content" class="main-content" tabindex="-1">
                 @RenderBody()
             </main>
         </div>
     </div>
 
     <footer class="footer-custom">
-        <div class="container text-center">
-            <p class="mb-1">
-                &copy; 2026 Shellty Blog — Made with <i class="bi bi-heart-fill text-danger"></i> for shells
-            </p>
-            <p class="mb-0">
-                <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
-            </p>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <strong>Shell<span class="highlight-ty">ty</span> Blog</strong>
+                <p>Useful stories and practical ideas for curious minds.</p>
+            </div>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <a asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-controller="BlogPost" asp-action="Posts">Explore posts</a>
+                <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </nav>
+            <p class="footer-copy">&copy; @DateTime.UtcNow.Year Shellty Blog<br />Made with care for the community.</p>
         </div>
     </footer>
 
@@ -154,7 +156,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/logo.js" asp-append-version="true"></script>
     <script>
-        renderLogo('navbar-logo', { width: 40, height: 40 });
+        renderLogo('navbar-logo', { width: 38, height: 38 });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

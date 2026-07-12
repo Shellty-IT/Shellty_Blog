@@ -19,13 +19,14 @@ Shellty Blog is a content management system where administrators can create, edi
 ### Features
 
 - **Blog Management:** create, edit and delete posts with rich content and cover images
-- **Image Upload:** upload cover images with client-side preview, server-side validation (2 MB, JPG/PNG/WebP/GIF)
+- **Image Upload:** upload cover images with client-side preview and server-side validation (5 MB, JPG/PNG/WebP/GIF)
+- **Post Discovery:** search by title, content or category, sort results and browse paginated posts
 - **Category Filtering:** organize and filter posts by categories
 - **User Authentication:** registration, login and role-based authorization via ASP.NET Core Identity
 - **Admin Voting System:** unanimous approval required from all current admins to grant admin role
 - **User Management Panel:** list users, delete accounts, remove admin privileges
 - **Role-Based UI:** write/edit/delete buttons visible only to administrators
-- **Responsive Design:** modern UI with Bootstrap 5, custom CSS variables and hover effects
+- **Responsive Design:** accessible, mobile-first UI with Bootstrap 5, reusable cards and custom design tokens
 - **Containerized Deployment:** Docker + Render with Neon serverless PostgreSQL
 
 ## 🛠️ Tech Stack
@@ -54,30 +55,37 @@ Shellty Blog is a content management system where administrators can create, edi
 ```bash
 git clone https://github.com/your-username/Shellty_Blog.git
 cd Shellty_Blog
+```
 
-Update connection string in appsettings.Development.json:
+Update the connection string in `appsettings.Development.json`:
 
-JSON
-
+```json
 {
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Port=5432;Database=shellty;Username=postgres;Password=yourpassword"
   }
 }
+```
 
 Run the application:
 
-Bash
-
+```bash
 dotnet ef database update
 dotnet run
+```
 
-Docker
+Run the automated tests:
 
-Bash
+```bash
+dotnet test tests/Shellty_Blog.Tests/Shellty_Blog.Tests.csproj
+```
 
+Build and run with Docker:
+
+```bash
 docker build -t shellty-blog .
 docker run -p 10000:10000 -e DATABASE_URL="your-connection-string" shellty-blog
+```
 
 🏗️ Architecture
 
@@ -116,7 +124,6 @@ Key Design Decisions
     Comments under posts
     Likes / favorites
     User profile (edit display name)
-    Post search
     Cloud image storage (Cloudinary/S3)
     Integration tests for roles and authorization
 
