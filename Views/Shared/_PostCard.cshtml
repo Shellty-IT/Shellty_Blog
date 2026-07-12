@@ -17,7 +17,9 @@
     <div class="card-body d-flex flex-column">
         @if (!string.IsNullOrWhiteSpace(Model.Category))
         {
-            <a asp-controller="BlogPost" asp-action="Posts" asp-route-category="@Model.Category" class="badge badge-category align-self-start">@Model.Category</a>
+            <a asp-controller="BlogPost" asp-action="Posts" asp-route-category="@Model.Category" class="badge badge-category align-self-start">
+                <span class="visually-hidden">Browse category </span>@Model.Category
+            </a>
         }
         <h3 class="card-title">
             <a asp-controller="BlogPost" asp-action="Post" asp-route-id="@Model.Id">@Model.Title</a>
