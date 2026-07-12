@@ -59,7 +59,7 @@ namespace Shellty_Blog.Controllers
         {
             var post = await _blogService.GetByIdAsync(id);
             if (post == null) return View("PostNotFound");
-            return View(post);
+            return View(PostDetailsViewModel.FromPost(post));
         }
 
         [Authorize(Roles = "Admin")]

@@ -56,3 +56,32 @@ public sealed class HomeViewModel
     public int TotalPostCount { get; init; }
     public int CategoryCount { get; init; }
 }
+
+public sealed class PostDetailsViewModel
+{
+    public int Id { get; init; }
+    public string Title { get; init; } = string.Empty;
+    public string Content { get; init; } = string.Empty;
+    public string? Category { get; init; }
+    public DateTime CreatedDate { get; init; }
+    public DateTime? ModifiedDate { get; init; }
+    public bool HasImage { get; init; }
+    public int ReadingTimeMinutes { get; init; }
+
+    public static PostDetailsViewModel FromPost(BlogPost post)
+    {
+        var wordCount = post.Content.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Length;
+
+        return new PostDetailsViewModel
+        {
+            Id = post.Id,
+            Title = post.Title,
+            Content = post.Content,
+            Category = post.Category,
+            CreatedDate = post.CreatedDate,
+            ModifiedDate = post.ModifiedDate,
+            HasImage = !string.IsNullOrWhiteSpace(post.ImageContentType),
+            ReadingTimeMinutes = Math.Max(1, (int)Math.Ceiling(wordCount / 200d))
+        };
+    }
+}
