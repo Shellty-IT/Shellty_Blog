@@ -18,7 +18,7 @@
         @if (!string.IsNullOrWhiteSpace(Model.Category))
         {
             <a asp-controller="BlogPost" asp-action="Posts" asp-route-category="@Model.Category" class="badge badge-category align-self-start">
-                <span class="visually-hidden">Browse category </span>@Model.Category
+                <span class="visually-hidden">Category </span>@Model.Category
             </a>
         }
         <h3 class="card-title">
@@ -30,7 +30,7 @@
         </div>
         <p class="card-text flex-grow-1">@Model.Excerpt</p>
         <a asp-controller="BlogPost" asp-action="Post" asp-route-id="@Model.Id" class="post-card-link">
-            Read article <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+            Read More <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
         </a>
     </div>
 </article>

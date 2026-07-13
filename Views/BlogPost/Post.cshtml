@@ -7,7 +7,7 @@
 <nav aria-label="Breadcrumb" class="article-breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-        <li class="breadcrumb-item"><a asp-action="Posts">Explore</a></li>
+        <li class="breadcrumb-item"><a asp-action="Posts">All Posts</a></li>
         <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
     </ol>
 </nav>
@@ -24,7 +24,7 @@
             <span><i class="bi bi-clock" aria-hidden="true"></i> @Model.ReadingTimeMinutes min read</span>
             @if (Model.ModifiedDate.HasValue)
             {
-                <span><i class="bi bi-pencil" aria-hidden="true"></i> Updated @Model.ModifiedDate.Value.ToString("MMM dd, yyyy")</span>
+            <span><i class="bi bi-pencil" aria-hidden="true"></i> Last updated: @Model.ModifiedDate.Value.ToString("MMMM dd, yyyy")</span>
             }
         </div>
     </header>
@@ -33,7 +33,7 @@
     {
         <figure class="article-cover">
             <img src="@Url.Action("GetImage", "BlogPost", new { id = Model.Id })"
-                 alt="Cover image for @Model.Title" loading="eager" />
+                 alt="@Model.Title" loading="eager" />
         </figure>
     }
 
@@ -41,13 +41,13 @@
 
     <footer class="article-footer">
         <a asp-action="Posts" class="section-link">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to all posts
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> All Posts
         </a>
         @if (User.IsInRole("Admin"))
         {
             <div class="article-admin-actions">
                 <a asp-action="EditPost" asp-route-id="@Model.Id" class="btn btn-outline-primary">
-                    <i class="bi bi-pencil-square" aria-hidden="true"></i> Edit post
+                    <i class="bi bi-pencil-square" aria-hidden="true"></i> Edit
                 </a>
                 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                     <i class="bi bi-trash" aria-hidden="true"></i> Delete
@@ -63,7 +63,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title fs-5" id="deleteModalTitle">Delete this post?</h2>
+                    <h2 class="modal-title fs-5" id="deleteModalTitle">Confirm Delete</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -74,7 +74,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <form asp-action="DeletePost" asp-route-id="@Model.Id" method="post">
                         <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash" aria-hidden="true"></i> Delete post
+                            <i class="bi bi-trash" aria-hidden="true"></i> Delete
                         </button>
                     </form>
                 </div>

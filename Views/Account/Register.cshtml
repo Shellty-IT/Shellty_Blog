@@ -1,15 +1,13 @@
 @model RegisterViewModel
 
 @{
-    ViewData["Title"] = "Create account";
+    ViewData["Title"] = "Register";
 }
 
 <div class="auth-shell">
     <section class="auth-card" aria-labelledby="register-title">
         <div class="auth-icon"><i class="bi bi-person-plus" aria-hidden="true"></i></div>
-        <span class="eyebrow text-primary">Join the community</span>
-        <h1 id="register-title">Create your account</h1>
-        <p class="auth-intro">A few details are all you need to get started.</p>
+        <h1 id="register-title">Register</h1>
 
         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
@@ -36,11 +34,11 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary w-100">
-                Create account <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                Register <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </button>
         </form>
 
-        <p class="auth-switch">Already registered? <a asp-action="Login">Log in</a></p>
+        <p class="auth-switch">Already have an account? <a asp-action="Login">Login here</a></p>
     </section>
 </div>
 

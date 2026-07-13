@@ -54,7 +54,7 @@
                         <li class="nav-item">
                             <a class="nav-link @(currentController == "BlogPost" && currentAction == "Posts" ? "active" : null)"
                                aria-current="@(currentController == "BlogPost" && currentAction == "Posts" ? "page" : null)"
-                               asp-controller="BlogPost" asp-action="Posts">Explore</a>
+                               asp-controller="BlogPost" asp-action="Posts">Posts</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link @(currentController == "Home" && currentAction == "Privacy" ? "active" : null)"
@@ -84,12 +84,12 @@
                                         <li><h2 class="dropdown-header">Administration</h2></li>
                                         <li>
                                             <a class="dropdown-item" asp-controller="Admin" asp-action="Requests">
-                                                <i class="bi bi-shield-check" aria-hidden="true"></i> Admin requests
+                                                <i class="bi bi-shield-check" aria-hidden="true"></i> Admin Requests
                                             </a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" asp-controller="Admin" asp-action="Users">
-                                                <i class="bi bi-people" aria-hidden="true"></i> Manage users
+                                                <i class="bi bi-people" aria-hidden="true"></i> Manage Users
                                             </a>
                                         </li>
                                     }
@@ -97,7 +97,7 @@
                                     {
                                         <li>
                                             <a class="dropdown-item" asp-controller="Admin" asp-action="RequestAdmin">
-                                                <i class="bi bi-shield-plus" aria-hidden="true"></i> Request admin access
+                                                <i class="bi bi-shield-plus" aria-hidden="true"></i> Request Admin
                                             </a>
                                         </li>
                                     }
@@ -105,7 +105,7 @@
                                     <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post">
                                             <button type="submit" class="dropdown-item">
-                                                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Log out
+                                                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
                                             </button>
                                         </form>
                                     </li>
@@ -115,10 +115,10 @@
                         else
                         {
                             <li class="nav-item auth-links">
-                                <a class="nav-link" asp-controller="Account" asp-action="Login">Log in</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item auth-links">
-                                <a class="btn nav-register-button" asp-controller="Account" asp-action="Register">Join Shellty</a>
+                                <a class="btn nav-register-button" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                         }
                     </ul>
@@ -140,14 +140,13 @@
         <div class="container footer-grid">
             <div class="footer-brand">
                 <strong>Shell<span class="highlight-ty">ty</span> Blog</strong>
-                <p>Useful stories and practical ideas for curious minds.</p>
             </div>
             <nav class="footer-links" aria-label="Footer navigation">
                 <a asp-controller="Home" asp-action="Index">Home</a>
-                <a asp-controller="BlogPost" asp-action="Posts">Explore posts</a>
+                <a asp-controller="BlogPost" asp-action="Posts">Posts</a>
                 <a asp-controller="Home" asp-action="Privacy">Privacy</a>
             </nav>
-            <p class="footer-copy">&copy; @DateTime.UtcNow.Year Shellty Blog<br />Made with care for the community.</p>
+            <p class="footer-copy">&copy; 2026 Shellty Blog — Made with <i class="bi bi-heart-fill text-danger"></i> for shells</p>
         </div>
     </footer>
 

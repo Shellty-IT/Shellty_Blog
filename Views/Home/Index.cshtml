@@ -6,9 +6,8 @@
 
 <section class="hero-section" aria-labelledby="hero-title">
     <div class="hero-content">
-        <span class="eyebrow"><i class="bi bi-stars" aria-hidden="true"></i> Explore the world of shells</span>
-        <h1 id="hero-title">Stories worth coming out of your <span class="highlight-ty">shell</span> for.</h1>
-        <p>Discover practical guides, fresh ideas and thoughtful stories from the Shellty community.</p>
+        <h1 id="hero-title">Welcome to Shell<span class="highlight-ty">ty</span> Blog</h1>
+        <p>Your adventure in learning about the shells starts here!</p>
 
         <form asp-controller="BlogPost" asp-action="Posts" method="get" class="hero-search" role="search">
             <label class="visually-hidden" for="hero-search-input">Search articles</label>
@@ -19,12 +18,12 @@
 
         <div class="hero-actions">
             <a asp-controller="BlogPost" asp-action="Posts" class="btn btn-light btn-lg">
-                Browse all posts <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                View All Posts <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </a>
             @if (User.IsInRole("Admin"))
             {
                 <a asp-controller="BlogPost" asp-action="CreatePost" class="btn btn-hero-secondary btn-lg">
-                    <i class="bi bi-pencil-square" aria-hidden="true"></i> Write a post
+                    <i class="bi bi-pencil-square" aria-hidden="true"></i> Create New Post
                 </a>
             }
         </div>
@@ -34,20 +33,13 @@
     </div>
 </section>
 
-<div class="content-stats" aria-label="Blog overview">
-    <div><strong>@Model.TotalPostCount</strong><span>published posts</span></div>
-    <div><strong>@Model.CategoryCount</strong><span>topics to explore</span></div>
-    <div><strong>100%</strong><span>made for curious minds</span></div>
-</div>
-
 <section class="content-section" aria-labelledby="recent-posts-title">
     <div class="section-heading">
         <div>
-            <span class="eyebrow text-primary">Latest from the blog</span>
-            <h2 id="recent-posts-title" class="section-title">Recent posts</h2>
+            <h2 id="recent-posts-title" class="section-title">Recent Posts</h2>
         </div>
         <a asp-controller="BlogPost" asp-action="Posts" class="section-link">
-            View all posts <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            View All Posts <i class="bi bi-arrow-right" aria-hidden="true"></i>
         </a>
     </div>
 
@@ -66,11 +58,10 @@
     {
         <div class="empty-state">
             <i class="bi bi-journal-richtext" aria-hidden="true"></i>
-            <h3>The first story is waiting to be written</h3>
-            <p>Check back soon for new articles from the Shellty community.</p>
+            <p>No posts yet. Create your first post to get started!</p>
             @if (User.IsInRole("Admin"))
             {
-                <a asp-controller="BlogPost" asp-action="CreatePost" class="btn btn-primary">Create the first post</a>
+                <a asp-controller="BlogPost" asp-action="CreatePost" class="btn btn-primary">Create New Post</a>
             }
         </div>
     }
