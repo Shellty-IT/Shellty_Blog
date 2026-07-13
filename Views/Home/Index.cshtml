@@ -17,9 +17,6 @@
         </form>
 
         <div class="hero-actions">
-            <a asp-controller="BlogPost" asp-action="Posts" class="btn btn-light btn-lg">
-                View All Posts <i class="bi bi-arrow-right" aria-hidden="true"></i>
-            </a>
             @if (User.IsInRole("Admin"))
             {
                 <a asp-controller="BlogPost" asp-action="CreatePost" class="btn btn-hero-secondary btn-lg">
