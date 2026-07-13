@@ -1,23 +1,21 @@
 @{
-    ViewData["Title"] = "Request admin access";
+    ViewData["Title"] = "Request Admin Access";
 }
 
 <div class="auth-shell">
     <section class="auth-card" aria-labelledby="request-title">
         <div class="auth-icon"><i class="bi bi-shield-plus" aria-hidden="true"></i></div>
-        <span class="eyebrow text-primary">Community trust</span>
-        <h1 id="request-title">Request admin access</h1>
-        <p class="auth-intro">Every current administrator must approve your request before access is granted.</p>
+        <h1 id="request-title">Request Admin Access</h1>
+        <p class="auth-intro">All current administrators must approve your request before you become an admin.</p>
 
         <form asp-action="RequestAdmin" method="post">
             <div class="mb-4">
-                <label for="message" class="form-label">Why would you like to help administer Shellty?</label>
+                <label for="message" class="form-label">Why do you want to become an admin?</label>
                 <textarea name="message" id="message" class="form-control" rows="5"
-                          maxlength="500" placeholder="Tell the team how you would like to contribute…" required></textarea>
-                <small class="text-muted">Maximum 500 characters.</small>
+                          maxlength="500" placeholder="Tell us why you should be an administrator..." required></textarea>
             </div>
             <button type="submit" class="btn btn-primary w-100">
-                Send request <i class="bi bi-send" aria-hidden="true"></i>
+                Submit Request <i class="bi bi-send" aria-hidden="true"></i>
             </button>
         </form>
     </section>

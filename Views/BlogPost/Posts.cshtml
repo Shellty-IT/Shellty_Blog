@@ -1,19 +1,17 @@
 @model PostsViewModel
 
 @{
-    ViewData["Title"] = "Explore posts";
+    ViewData["Title"] = "All Posts";
 }
 
 <header class="page-header">
     <div>
-        <span class="eyebrow text-primary">Shellty library</span>
-        <h1 class="section-title">Explore all posts</h1>
-        <p>Search the archive, choose a topic and find your next useful read.</p>
+        <h1 class="section-title">All Posts</h1>
     </div>
     @if (User.IsInRole("Admin"))
     {
         <a asp-action="CreatePost" class="btn btn-primary">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i> Write new post
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Write New Post
         </a>
     }
 </header>
@@ -48,7 +46,7 @@
         <div class="category-filter" aria-label="Filter by category">
             <a asp-action="Posts" asp-route-search="@Model.SearchTerm" asp-route-sort="@Model.Sort"
                class="category-chip @(string.IsNullOrWhiteSpace(Model.Category) ? "active" : null)"
-               aria-current="@(string.IsNullOrWhiteSpace(Model.Category) ? "true" : null)">All topics</a>
+               aria-current="@(string.IsNullOrWhiteSpace(Model.Category) ? "true" : null)">All</a>
             @foreach (var category in Model.Categories)
             {
                 <a asp-action="Posts" asp-route-search="@Model.SearchTerm" asp-route-category="@category" asp-route-sort="@Model.Sort"
@@ -60,7 +58,7 @@
 </section>
 
 <div class="results-toolbar" aria-live="polite">
-    <p><strong>@Model.TotalCount</strong> @(Model.TotalCount == 1 ? "post" : "posts") found</p>
+    <p><strong>@Model.TotalCount</strong> posts found</p>
     @if (Model.HasActiveFilters)
     {
         <a asp-action="Posts" asp-route-sort="@Model.Sort" class="clear-filters">
@@ -73,9 +71,7 @@
 {
     <div class="empty-state">
         <i class="bi bi-search" aria-hidden="true"></i>
-        <h2>No matching posts</h2>
-        <p>Try another phrase or remove the active category filter.</p>
-        <a asp-action="Posts" class="btn btn-primary">Show all posts</a>
+        <p>No posts found. Be the first to write something!</p>
     </div>
 }
 else
