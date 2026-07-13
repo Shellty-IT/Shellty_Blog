@@ -760,7 +760,7 @@ h6 {
 
 .hero-section {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  grid-template-columns: minmax(0, 1.6fr) minmax(220px, 0.4fr);
   align-items: center;
   min-height: 510px;
   padding: clamp(3rem, 7vw, 5rem);
@@ -785,10 +785,10 @@ h6 {
 }
 
 .hero-section h1 {
-  max-width: 760px;
+  max-width: none;
   margin: 0.8rem 0 1rem;
   color: #ffffff;
-  font-size: clamp(2.5rem, 5vw, 4.75rem);
+  font-size: clamp(2.2rem, 3.3vw, 3.6rem);
   line-height: 1.02;
 }
 
@@ -872,6 +872,13 @@ h6 {
   display: grid;
   place-items: center;
   min-width: 0;
+  transform: translateX(1.5rem);
+}
+
+@media (min-width: 992px) {
+  .hero-section h1 {
+    white-space: nowrap;
+  }
 }
 
 .hero-visual .shellty-logo {
