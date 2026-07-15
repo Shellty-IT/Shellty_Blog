@@ -9,6 +9,15 @@
     var currentUser = isSignedIn ? await UserManager.GetUserAsync(User) : null;
     var displayName = currentUser?.DisplayName ?? User.Identity?.Name ?? "Account";
     var accountInitial = string.IsNullOrWhiteSpace(displayName) ? "?" : displayName[..1].ToUpperInvariant();
+    const string siteUrl = "https://shellty-blog.onrender.com";
+    const string siteName = "Shellty Blog";
+    const string siteDescription = "A modern ASP.NET Core MVC blog platform with role-based administration, democratic approval workflows, and PostgreSQL-powered content management.";
+    const string ogImageUrl = "https://shellty-blog.onrender.com/images/shellty-blog-og.jpg";
+    var canonicalUrl = $"{siteUrl}{Context.Request.PathBase}{Context.Request.Path}";
+    var pageTitle = ViewData["Title"]?.ToString();
+    var documentTitle = string.IsNullOrWhiteSpace(pageTitle) || pageTitle == "Home"
+        ? siteName
+        : $"{pageTitle} | {siteName}";
 }
 
 <!DOCTYPE html>
@@ -17,8 +26,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#1a3050" />
-    <meta name="description" content="Shellty Blog — practical guides and thoughtful stories for curious minds." />
-    <title>@ViewData["Title"] - Shellty Blog</title>
+    <meta name="description" content="@siteDescription" />
+    <link rel="canonical" href="@canonicalUrl" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="@siteName" />
+    <meta property="og:title" content="@documentTitle" />
+    <meta property="og:description" content="@siteDescription" />
+    <meta property="og:url" content="@canonicalUrl" />
+    <meta property="og:image" content="@ogImageUrl" />
+    <meta property="og:image:secure_url" content="@ogImageUrl" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Shellty Blog – ASP.NET Core MVC blog platform" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@documentTitle" />
+    <meta name="twitter:description" content="@siteDescription" />
+    <meta name="twitter:image" content="@ogImageUrl" />
+    <meta name="twitter:image:alt" content="Shellty Blog – ASP.NET Core MVC blog platform" />
+    <title>@documentTitle</title>
 
     <link rel="icon" type="image/png" href="~/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
