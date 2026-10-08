@@ -9,10 +9,10 @@
     var currentUser = isSignedIn ? await UserManager.GetUserAsync(User) : null;
     var displayName = currentUser?.DisplayName ?? User.Identity?.Name ?? "Account";
     var accountInitial = string.IsNullOrWhiteSpace(displayName) ? "?" : displayName[..1].ToUpperInvariant();
-    const string siteUrl = "https://shellty-blog.onrender.com";
+    const string siteUrl = "https://blog.shellty.pl";
     const string siteName = "Shellty Blog";
     const string siteDescription = "A modern ASP.NET Core MVC blog platform with role-based administration, democratic approval workflows, and PostgreSQL-powered content management.";
-    const string ogImageUrl = "https://shellty-blog.onrender.com/images/shellty-blog-og.jpg";
+    const string ogImageUrl = "https://blog.shellty.pl/images/shellty-blog-og.jpg";
     var canonicalUrl = $"{siteUrl}{Context.Request.PathBase}{Context.Request.Path}";
     var pageTitle = ViewData["Title"]?.ToString();
     var documentTitle = string.IsNullOrWhiteSpace(pageTitle) || pageTitle == "Home"

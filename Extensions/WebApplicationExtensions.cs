@@ -22,6 +22,31 @@ public static class WebApplicationExtensions
             app.UseHsts();
         }
 
+        app.Use(async (context, next) =>
+        {
+            // Redirect only the production alias; health checks and form posts
+            // retain their existing behavior.
+            if (context.Request.Host.Host.Equals("shellty-blog.onrender.com", StringComparison.OrdinalIgnoreCase)
+                && (HttpMethods.IsGet(context.Request.Method) || HttpMethods.IsHead(context.Request.Method))
+                && !context.Request.Path.Equals("/health"))
+            {
+                context.Response.Redirect(
+                    $"https://blog.shellty.pl{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}",
+                    permanent: true);
+                return;
+            }
+
+            context.Response.OnStarting(() =>
+            {
+                if (context.Request.Path.StartsWithSegments("/Account")
+                    || context.Request.Path.StartsWithSegments("/Admin")
+                    || context.Response.StatusCode >= 400)
+                    context.Response.Headers["X-Robots-Tag"] = "noindex, follow";
+                return Task.CompletedTask;
+            });
+            await next(context);
+        });
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 

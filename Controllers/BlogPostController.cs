@@ -58,7 +58,11 @@ namespace Shellty_Blog.Controllers
         public async Task<IActionResult> Post(int id)
         {
             var post = await _blogService.GetByIdAsync(id);
-            if (post == null) return View("PostNotFound");
+            if (post == null)
+            {
+                Response.StatusCode = StatusCodes.Status404NotFound;
+                return View("PostNotFound");
+            }
             return View(PostDetailsViewModel.FromPost(post));
         }
 
